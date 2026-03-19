@@ -8,6 +8,8 @@ touch: CST816
 cpu: 240 MHz
 platform: ESP32
 
+IMPORTANT: this uses LVGL library version 8.4 the newest version breaks stuff.
+
 The one from waveshare might be identical: 
 https://www.waveshare.com/wiki/ESP32-S3-Knob-Touch-LCD-1.8 I’ve flashed their demo firmware and it works.
 
