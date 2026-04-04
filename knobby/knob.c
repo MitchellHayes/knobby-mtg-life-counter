@@ -38,7 +38,7 @@ void reset_all_values(void)
 {
     knob_life_reset();
 
-    brightness_percent = DEFAULT_BRIGHTNESS_PERCENT;
+    brightness_percent = nvs_get_brightness();
     brightness_apply();
 
     turn_timer_reset();
