@@ -37,6 +37,32 @@ static lv_timer_t *select_timeout_timer = NULL;
 static void open_multiplayer_name_screen(void);
 static void open_multiplayer_all_damage_screen(void);
 
+// ---------- rotation helper ----------
+static void apply_label_rotation(lv_obj_t *life_lbl, lv_obj_t *name_lbl,
+                                  int16_t angle, int life_pivot_y, int name_pivot_y)
+{
+    if (life_lbl != NULL) {
+        lv_obj_set_style_transform_angle(life_lbl, angle, 0);
+        if (angle != 0) {
+            lv_obj_update_layout(life_lbl);
+            lv_obj_set_style_transform_pivot_x(life_lbl,
+                lv_obj_get_width(life_lbl) / 2, 0);
+            lv_obj_set_style_transform_pivot_y(life_lbl,
+                lv_obj_get_height(life_lbl) / 2 + life_pivot_y, 0);
+        }
+    }
+    if (name_lbl != NULL) {
+        lv_obj_set_style_transform_angle(name_lbl, angle, 0);
+        if (angle != 0) {
+            lv_obj_update_layout(name_lbl);
+            lv_obj_set_style_transform_pivot_x(name_lbl,
+                lv_obj_get_width(name_lbl) / 2, 0);
+            lv_obj_set_style_transform_pivot_y(name_lbl,
+                lv_obj_get_height(name_lbl) / 2 + name_pivot_y, 0);
+        }
+    }
+}
+
 // ---------- refresh helpers ----------
 static void refresh_mp_panel(lv_obj_t *panel, lv_obj_t *life_lbl, lv_obj_t *name_lbl, int i)
 {
@@ -83,50 +109,53 @@ static void refresh_mp_panel(lv_obj_t *panel, lv_obj_t *life_lbl, lv_obj_t *name
 
 static void refresh_multiplayer_4p_ui(void)
 {
-    static const int16_t life_offsets_x[MULTIPLAYER_COUNT] = {-90, 90, 90, -90};
-    static const int16_t life_offsets_y[MULTIPLAYER_COUNT] = {-90, -90, 90, 90};
-    static const int16_t name_offsets_x[MULTIPLAYER_COUNT] = {-90, 90, 90, -90};
-    static const int16_t name_offsets_y[MULTIPLAYER_COUNT] = {-40, -40, 32, 32};
+    static const int16_t rot[MULTIPLAYER_COUNT] = {1350, 2250, 3150, 450};
+    bool do_rot = nvs_get_rotation();
     int i;
 
     for (i = 0; i < MULTIPLAYER_COUNT; i++) {
         refresh_mp_panel(multiplayer_quadrants[i], label_multiplayer_life[i], label_multiplayer_name[i], i);
         if (label_multiplayer_life[i] != NULL) {
             lv_obj_clear_flag(label_multiplayer_life[i], LV_OBJ_FLAG_HIDDEN);
-            lv_obj_align(label_multiplayer_life[i], LV_ALIGN_CENTER, life_offsets_x[i], life_offsets_y[i]);
+            lv_obj_align(label_multiplayer_life[i], LV_ALIGN_CENTER, 0, do_rot ? -30 : -12);
         }
         if (label_multiplayer_name[i] != NULL) {
             lv_obj_clear_flag(label_multiplayer_name[i], LV_OBJ_FLAG_HIDDEN);
-            lv_obj_align(label_multiplayer_name[i], LV_ALIGN_CENTER, name_offsets_x[i], name_offsets_y[i]);
+            lv_obj_align(label_multiplayer_name[i], LV_ALIGN_CENTER, 0, 30);
         }
+        apply_label_rotation(label_multiplayer_life[i], label_multiplayer_name[i],
+            do_rot ? rot[i] : 0, 30, -30);
     }
 }
 
 static void refresh_multiplayer_2p_ui(void)
 {
+    bool do_rot = nvs_get_rotation();
     int i;
     for (i = 0; i < 2; i++) {
         refresh_mp_panel(mp2_panels[i], label_mp2_life[i], label_mp2_name[i], i);
+        apply_label_rotation(label_mp2_life[i], label_mp2_name[i],
+            (i == 0 && do_rot) ? 1800 : 0, 10, -30);
     }
 }
 
 static void refresh_multiplayer_3p_ui(void)
 {
-    static const int16_t life_offsets_x[MULTIPLAYER_COUNT] = {-90, 90, 90, -90};
-    static const int16_t life_offsets_y[MULTIPLAYER_COUNT] = {-90, -90, 90, 90};
-    static const int16_t name_offsets_x[MULTIPLAYER_COUNT] = {-90, 90, 90, -90};
-    static const int16_t name_offsets_y[MULTIPLAYER_COUNT] = {-40, -40, 32, 32};
+    static const int16_t rot[MULTIPLAYER_COUNT] = {1350, 2250, 3150, 450};
     /* Map 3 players to quadrants: 0=top-left, 1=top-right, 3=bottom-left */
     static const int slots[3] = {0, 1, 3};
+    bool do_rot = nvs_get_rotation();
     int i, q;
 
     for (i = 0; i < 3; i++) {
         q = slots[i];
         refresh_mp_panel(multiplayer_quadrants[q], label_multiplayer_life[q], label_multiplayer_name[q], i);
         if (label_multiplayer_life[q] != NULL)
-            lv_obj_align(label_multiplayer_life[q], LV_ALIGN_CENTER, life_offsets_x[q], life_offsets_y[q]);
+            lv_obj_align(label_multiplayer_life[q], LV_ALIGN_CENTER, 0, do_rot ? -30 : -12);
         if (label_multiplayer_name[q] != NULL)
-            lv_obj_align(label_multiplayer_name[q], LV_ALIGN_CENTER, name_offsets_x[q], name_offsets_y[q]);
+            lv_obj_align(label_multiplayer_name[q], LV_ALIGN_CENTER, 0, 30);
+        apply_label_rotation(label_multiplayer_life[q], label_multiplayer_name[q],
+            do_rot ? rot[q] : 0, 30, -30);
     }
 
     /* Hide bottom-right quadrant (index 2) */
@@ -378,15 +407,18 @@ void build_multiplayer_screen(void)
         lv_obj_add_event_cb(multiplayer_quadrants[i], event_multiplayer_select, LV_EVENT_CLICKED, (void *)(intptr_t)i);
         lv_obj_add_event_cb(multiplayer_quadrants[i], event_multiplayer_open_menu, LV_EVENT_LONG_PRESSED, (void *)(intptr_t)i);
 
-        label_multiplayer_name[i] = lv_label_create(screen_multiplayer);
+        label_multiplayer_name[i] = lv_label_create(multiplayer_quadrants[i]);
         lv_label_set_text(label_multiplayer_name[i], player_names[i]);
         lv_obj_set_style_text_color(label_multiplayer_name[i], lv_color_white(), 0);
         lv_obj_set_style_text_font(label_multiplayer_name[i], &lv_font_montserrat_14, 0);
+        lv_obj_align(label_multiplayer_name[i], LV_ALIGN_CENTER, 0, 30);
 
-        label_multiplayer_life[i] = lv_label_create(screen_multiplayer);
+        label_multiplayer_life[i] = lv_label_create(multiplayer_quadrants[i]);
         lv_label_set_text(label_multiplayer_life[i], "40");
         lv_obj_set_style_text_color(label_multiplayer_life[i], lv_color_white(), 0);
         lv_obj_set_style_text_font(label_multiplayer_life[i], &lv_font_montserrat_32, 0);
+        lv_obj_align(label_multiplayer_life[i], LV_ALIGN_CENTER, 0, -30);
+
     }
 
     refresh_multiplayer_ui();
@@ -507,6 +539,7 @@ void build_multiplayer_2p_screen(void)
         lv_obj_set_style_text_color(label_mp2_life[i], lv_color_white(), 0);
         lv_obj_set_style_text_font(label_mp2_life[i], &lv_font_montserrat_32, 0);
         lv_obj_align(label_mp2_life[i], LV_ALIGN_CENTER, 0, -10);
+
     }
 }
 

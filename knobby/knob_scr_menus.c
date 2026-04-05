@@ -21,6 +21,7 @@ lv_obj_t *screen_battery = NULL;
 static lv_obj_t *label_autodim_quad = NULL;
 static lv_obj_t *label_color_mode_quad = NULL;
 static lv_obj_t *label_deselect_quad = NULL;
+static lv_obj_t *label_rotation_quad = NULL;
 static lv_obj_t *arc_brightness = NULL;
 static lv_obj_t *label_settings_value = NULL;
 static lv_obj_t *label_settings_hint = NULL;
@@ -200,6 +201,17 @@ static void event_screen_deselect(lv_event_t *e)
     }
 }
 
+static void event_screen_rotation(lv_event_t *e)
+{
+    bool val;
+    (void)e;
+    val = !nvs_get_rotation();
+    nvs_set_rotation(val);
+    if (label_rotation_quad) {
+        lv_label_set_text(label_rotation_quad, val ? "Rotation\nEnabled" : "Rotation\nDisabled");
+    }
+}
+
 static void event_screen_more(lv_event_t *e)
 {
     (void)e;
@@ -266,7 +278,7 @@ void build_quad_menus(void)
     quad_item_t page2_items[4] = {
         {color_mode_label(nvs_get_color_mode()), event_screen_color_mode, true, LV_EVENT_CLICKED},
         {deselect_label(nvs_get_deselect_timeout()), event_screen_deselect, true, LV_EVENT_CLICKED},
-        {"",              NULL, false, LV_EVENT_CLICKED},
+        {nvs_get_rotation() ? "Rotation\nEnabled" : "Rotation\nDisabled", event_screen_rotation, true, LV_EVENT_CLICKED},
         {"",              NULL, false, LV_EVENT_CLICKED},
     };
     build_quad_screen(&screen_settings_page2, page2_items);
@@ -276,6 +288,9 @@ void build_quad_menus(void)
 
     lv_obj_t *deselect_btn = lv_obj_get_child(screen_settings_page2, 1);
     label_deselect_quad = lv_obj_get_child(deselect_btn, 0);
+
+    lv_obj_t *rotation_btn = lv_obj_get_child(screen_settings_page2, 2);
+    label_rotation_quad = lv_obj_get_child(rotation_btn, 0);
 }
 
 void build_settings_screen(void)

@@ -8,6 +8,7 @@ static int cached_brightness = DEFAULT_BRIGHTNESS_PERCENT;
 static bool cached_auto_dim = false;
 static int cached_color_mode = 0;
 static int cached_deselect_timeout = 0; /* index: 0=never, 1=5s, 2=15s, 3=30s */
+static bool cached_rotation = false;
 static int cached_num_players = 4;
 static int cached_players_to_track = 1;
 static int cached_life_total = DEFAULT_LIFE_TOTAL;
@@ -23,6 +24,7 @@ void knob_nvs_init(void)
         int8_t bri_val = DEFAULT_BRIGHTNESS_PERCENT;
         int8_t lc_val = 0;
         int8_t dt_val = 0;
+        int8_t rot_val = 0;
         int8_t np_val = 4;
         int8_t pt_val = 1;
         int16_t lt_val = DEFAULT_LIFE_TOTAL;
@@ -31,6 +33,7 @@ void knob_nvs_init(void)
         nvs_get_i8(handle, "brightness", &bri_val);
         nvs_get_i8(handle, "color_mode", &lc_val);
         nvs_get_i8(handle, "desel_time", &dt_val);
+        nvs_get_i8(handle, "rotation", &rot_val);
         nvs_get_i8(handle, "num_players", &np_val);
         nvs_get_i8(handle, "track", &pt_val);
         nvs_get_i16(handle, "life_total", &lt_val);
@@ -38,6 +41,7 @@ void knob_nvs_init(void)
         cached_auto_dim = (dim_val != 0);
         cached_color_mode = lc_val;
         cached_deselect_timeout = (dt_val < 0) ? 0 : (dt_val > 3) ? 3 : dt_val;
+        cached_rotation = (rot_val != 0);
         cached_brightness = clamp_brightness(bri_val);
         cached_num_players = (np_val < 1) ? 1 : (np_val > MAX_PLAYERS) ? MAX_PLAYERS : np_val;
         cached_players_to_track = (pt_val < 1) ? 1 : (pt_val > 4) ? 4 : pt_val;
@@ -93,6 +97,17 @@ void nvs_set_deselect_timeout(int value)
     settings_dirty = true;
 }
 
+bool nvs_get_rotation(void)
+{
+    return cached_rotation;
+}
+
+void nvs_set_rotation(bool value)
+{
+    cached_rotation = value;
+    settings_dirty = true;
+}
+
 // ---------- game mode getters/setters ----------
 int nvs_get_num_players(void)
 {
@@ -137,6 +152,7 @@ void settings_save(void)
         nvs_set_i8(handle, "brightness", (int8_t)cached_brightness);
         nvs_set_i8(handle, "color_mode", (int8_t)cached_color_mode);
         nvs_set_i8(handle, "desel_time", (int8_t)cached_deselect_timeout);
+        nvs_set_i8(handle, "rotation", cached_rotation ? 1 : 0);
         nvs_set_i8(handle, "num_players", (int8_t)cached_num_players);
         nvs_set_i8(handle, "track", (int8_t)cached_players_to_track);
         nvs_set_i16(handle, "life_total", (int16_t)cached_life_total);
