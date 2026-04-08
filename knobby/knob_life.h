@@ -32,6 +32,7 @@ void damage_apply(void);
 void damage_cancel(void);
 void change_multiplayer_life(int delta);
 void change_multiplayer_all_damage(int delta);
+void undo_life_change(int player, int delta);
 void prepare_cmd_damage_for_player(int target);
 void multiplayer_life_preview_commit_cb(lv_timer_t *timer);
 

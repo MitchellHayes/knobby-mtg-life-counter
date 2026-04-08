@@ -288,6 +288,19 @@ void change_multiplayer_all_damage(int delta)
     refresh_multiplayer_all_damage_ui();
 }
 
+// ---------- undo ----------
+void undo_life_change(int player, int delta)
+{
+    if (player < 0) {
+        life_total = clamp_life(life_total - delta);
+        refresh_main_ui();
+        refresh_select_ui();
+    } else if (player < MAX_PLAYERS) {
+        multiplayer_life[player] = clamp_life(multiplayer_life[player] - delta);
+        refresh_multiplayer_ui();
+    }
+}
+
 // ---------- reset ----------
 void knob_life_reset(void)
 {

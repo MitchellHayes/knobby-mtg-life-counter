@@ -144,8 +144,8 @@ static void handle_knob_event(knob_event_t k)
     }
     else if (lv_scr_act() == screen_damage_log)
     {
-        if (k == KNOB_LEFT)      damage_log_scroll(1);
-        else if (k == KNOB_RIGHT) damage_log_scroll(-1);
+        if (k == KNOB_LEFT)      damage_log_select_prev();
+        else if (k == KNOB_RIGHT) damage_log_select_next();
     }
 }
 
