@@ -17,13 +17,11 @@ Features/intended use:
 
 ## 🛠️ Installation
 
-Head over to our releases page. 
-
-Connect your device and hit install.
+Go to https://knobby-mtg.github.io/knobby-mtg-life-counter/ to install the latest release with a compatible browser.
 
 ## 🚀 Getting Started
 
-TODO - cover menu interaction, etc, etc
+Swipe up from the bottom to open the menu, and down from the top to close a menu or go back.
 
 ## ⚙️ Hardware
 
