@@ -28,6 +28,15 @@
 #define ORIENTATION_MODE_TABLETOP 2
 #define ORIENTATION_MODE_COUNT    3
 
+// ---------- auto-dim timeout options ----------
+#define AUTO_DIM_OFF  0
+#define AUTO_DIM_15S  1
+#define AUTO_DIM_30S  2
+#define AUTO_DIM_60S  3
+#define AUTO_DIM_COUNT 4
+
+static const uint32_t auto_dim_ms[] = {0, 15000, 30000, 60000};
+
 // ---------- deselect timeout options ----------
 #define DESELECT_NEVER 0
 #define DESELECT_5S    1
@@ -79,7 +88,7 @@ static inline int clamp_life(int value)
 
 static inline int clamp_brightness(int value)
 {
-    if (value < 5) return 5;
+    if (value < 1) return 1;
     if (value > 100) return 100;
     return value;
 }
