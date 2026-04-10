@@ -79,7 +79,7 @@ static inline int clamp_life(int value)
 
 static inline int clamp_brightness(int value)
 {
-    if (value < 5) return 5;
+    if (value < 1) return 1;
     if (value > 100) return 100;
     return value;
 }
