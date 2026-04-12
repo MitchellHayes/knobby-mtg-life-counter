@@ -496,6 +496,12 @@ static void event_multiplayer_select(lv_event_t *e)
     }
 
     if (multiplayer_selected == player) {
+        /* Deselecting the same player: if there's an active preview for
+         * this player, commit it immediately so the altered life total is
+         * shown (same behavior as selecting another player). */
+        if (multiplayer_life_preview_active && multiplayer_preview_player == player) {
+            multiplayer_life_preview_commit_cb(NULL);
+        }
         multiplayer_selected = -1;
     } else {
         multiplayer_selected = player;
@@ -660,7 +666,7 @@ void build_multiplayer_menu_screen(void)
 {
     quad_item_t items[4] = {
         {"Rename",      event_multiplayer_menu_rename,     true,  LV_EVENT_CLICKED},
-        {"Cmd\nDamage", event_multiplayer_menu_cmd_damage, true,  LV_EVENT_CLICKED},
+        {"Commander\nDamage", event_multiplayer_menu_cmd_damage, true,  LV_EVENT_CLICKED},
         {"All\nDamage", event_multiplayer_menu_all_damage, true,  LV_EVENT_CLICKED},
         {"Counters",    event_multiplayer_menu_counters,   true,  LV_EVENT_CLICKED},
     };
@@ -707,7 +713,7 @@ void build_multiplayer_all_damage_screen(void)
     lv_obj_set_style_text_font(label_multiplayer_all_damage_hint, &lv_font_montserrat_14, 0);
     lv_obj_align(label_multiplayer_all_damage_hint, LV_ALIGN_CENTER, 0, 38);
 
-    lv_obj_t *btn = make_button(screen_player_all_damage, "apply", 120, 46, event_multiplayer_all_damage_apply);
+    lv_obj_t *btn = make_button(screen_player_all_damage, "Apply", 120, 46, event_multiplayer_all_damage_apply);
     lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -46);
 }
 
@@ -740,7 +746,7 @@ void build_multiplayer_counter_edit_screen(void)
     lv_obj_set_style_text_font(label_multiplayer_counter_edit_hint, &lv_font_montserrat_14, 0);
     lv_obj_align(label_multiplayer_counter_edit_hint, LV_ALIGN_CENTER, 0, 34);
 
-    btn = make_button(screen_player_counter_edit, "apply", 120, 46, event_multiplayer_counter_apply);
+    btn = make_button(screen_player_counter_edit, "Apply", 120, 46, event_multiplayer_counter_apply);
     lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -46);
 }
 
