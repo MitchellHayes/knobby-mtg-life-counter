@@ -1,13 +1,19 @@
 # Knobby MTG Life Counter
 # Top-level Makefile for firmware and simulator targets
 
+-include config.mk
+
+# Default paths if config.mk not present
+LLVM_BIN ?= llvm-mingw/bin
+MAKE     ?= $(LLVM_BIN)/mingw32-make.exe
+
 # ---- Arduino CLI ----
-ARDUINO_CLI := $(shell which arduino-cli 2>/dev/null)
+ARDUINO_CLI ?= "C:\Program Files\Arduino CLI\arduino-cli.exe"
 FQBN        := esp32:esp32:esp32s3:FlashSize=16M,PSRAM=opi,USBMode=hwcdc,CDCOnBoot=cdc,FlashMode=qio
 EXTRA_URLS  := https://espressif.github.io/arduino-esp32/package_esp32_index.json
 
 .PHONY: help firmware firmware-flash firmware-deps check-arduino \
-        screenshot generate-matrix sim-clean clean
+        screenshot generate-matrix sim sim-gui sim-clean clean
 
 help:
 	@echo "Knobby MTG Life Counter"
@@ -22,8 +28,11 @@ help:
 	@echo "  make screenshot ARGS=\"--screen 4p\" - Screenshot specific screen"
 	@echo "  make generate-matrix               - Generate full screenshot matrix"
 	@echo ""
-	@echo "  make clean                         - Remove all build artifacts"
 	@echo "  make help                          - Show this message"
+	@echo ""
+	@echo "Interactive Simulator (PC):"
+	@echo "  make sim                           - Run interactive SDL2 simulator"
+	@echo "  make sim-gui                       - (alias for make sim)"
 	@echo ""
 	@echo "Run sim/knobby_sim --help for all screenshot CLI options"
 
@@ -57,6 +66,15 @@ firmware-flash: check-arduino
 	$(ARDUINO_CLI) upload --fqbn "$(FQBN)" -p $(PORT) knobby
 
 # ---- Screenshot targets (delegate to sim/) ----
+
+sim:
+	$(MAKE) -C sim gui
+
+sim-gui:
+	$(MAKE) -C sim gui
+
+sim-web:
+	$(MAKE) -C sim web
 
 screenshot:
 	$(MAKE) -C sim screenshot ARGS="$(ARGS)"

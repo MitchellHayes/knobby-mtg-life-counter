@@ -72,6 +72,24 @@ make generate-matrix
 
 Run `sim/knobby_sim --help` for all CLI options. See [sim/screenshots/README.md](sim/screenshots/README.md) for details.
 
+## 🕹️ Simulators
+
+You can test the Knobby interface on your PC or in a browser without hardware.
+
+### Web Simulator (WASM) 🌐
+The easiest way to try Knobby. It runs the **actual C firmware** in your browser.
+- **Run:** Double-click **`web_real.bat`**.
+- **Note:** It starts a local web server (requires Python) to bypass browser security.
+
+### PC Simulator (Native) 💻
+A native Windows application for local development.
+- **Run:** Double-click **`sim.bat`**.
+
+**Controls:**
+- **Touch:** Left Click
+- **Knob:** Mouse Wheel / Left & Right Arrows
+- **Swipe:** Up & Down Arrows | L & R keys
+
 ## 🧑‍🤝‍🧑 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
