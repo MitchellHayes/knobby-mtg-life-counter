@@ -326,7 +326,7 @@ static void event_open_damage_log(lv_event_t *e)
 static void event_tool_rename_all(lv_event_t *e)
 {
     (void)e;
-    multiplayer_menu_player = 0;
+    menu_player = 0;
     open_rename_all_screen();
 }
 

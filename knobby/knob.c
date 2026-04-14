@@ -93,23 +93,17 @@ static void handle_back_navigation(lv_obj_t *screen)
     } else if (screen == screen_custom_life) {
         refresh_game_mode_menu_ui();
         lv_scr_load(screen_game_mode_menu);
-    } else if (screen == screen_1p_menu) {
-        back_to_main();
     } else if (screen == screen_player_menu) {
-        open_multiplayer_screen();
+        back_to_main();
     } else if (screen == screen_player_name) {
         if (!name_screen_handle_back())
-            open_multiplayer_menu_screen(multiplayer_menu_player);
+            open_multiplayer_menu_screen(menu_player);
     } else if (screen == screen_player_counters_menu) {
-        if (counter_edit_is_singleplayer) {
-            back_to_main();
-        } else {
-            open_multiplayer_menu_screen(multiplayer_menu_player);
-        }
+        open_multiplayer_menu_screen(menu_player);
     } else if (screen == screen_player_counter_edit) {
         open_multiplayer_counter_menu_screen();
     } else if (screen == screen_player_all_damage) {
-        open_multiplayer_menu_screen(multiplayer_menu_player);
+        open_multiplayer_menu_screen(menu_player);
     }
 }
 
@@ -150,7 +144,6 @@ void knob_gui(void)
     brightness_apply();
     build_dice_screen();
     build_main_screen();
-    build_1p_menu_screen();
     build_multiplayer_screen();
     build_multiplayer_2p_screen();
     build_multiplayer_3p_screen();
@@ -196,8 +189,9 @@ static void handle_knob_event(knob_event_t k)
     }
     else if (lv_scr_act() == screen_1p)
     {
-        if (k == KNOB_LEFT)      change_life(-1);
-        else if (k == KNOB_RIGHT) change_life(+1);
+        selected_player = 0;
+        if (k == KNOB_LEFT)      change_player_life(-1);
+        else if (k == KNOB_RIGHT) change_player_life(+1);
     }
     else if (lv_scr_act() == screen_damage)
     {
@@ -214,13 +208,13 @@ static void handle_knob_event(knob_event_t k)
              lv_scr_act() == screen_3p ||
              lv_scr_act() == screen_2p)
     {
-        if (k == KNOB_LEFT)      change_multiplayer_life(-1);
-        else if (k == KNOB_RIGHT) change_multiplayer_life(+1);
+        if (k == KNOB_LEFT)      change_player_life(-1);
+        else if (k == KNOB_RIGHT) change_player_life(+1);
     }
     else if (lv_scr_act() == screen_player_all_damage)
     {
-        if (k == KNOB_LEFT)      change_multiplayer_all_damage(-1);
-        else if (k == KNOB_RIGHT) change_multiplayer_all_damage(+1);
+        if (k == KNOB_LEFT)      change_all_damage(-1);
+        else if (k == KNOB_RIGHT) change_all_damage(+1);
     }
     else if (lv_scr_act() == screen_custom_life)
     {
@@ -229,8 +223,8 @@ static void handle_knob_event(knob_event_t k)
     }
     else if (lv_scr_act() == screen_player_counter_edit)
     {
-        if (k == KNOB_LEFT)      change_multiplayer_counter_edit(-1);
-        else if (k == KNOB_RIGHT) change_multiplayer_counter_edit(+1);
+        if (k == KNOB_LEFT)      change_counter_edit(-1);
+        else if (k == KNOB_RIGHT) change_counter_edit(+1);
         refresh_multiplayer_counter_edit_ui();
     }
     else if (lv_scr_act() == screen_damage_log)

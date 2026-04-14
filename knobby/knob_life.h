@@ -22,56 +22,47 @@ typedef struct {
 
 // ---------- state ----------
 extern int active_enemy_count;
-extern int life_total;
-extern int pending_life_delta;
-extern bool life_preview_active;
 extern enemy_state_t enemies[MAX_ENEMY_COUNT];
 extern int selected_enemy;
-extern int multiplayer_life[MAX_PLAYERS];
-extern int multiplayer_selected;
-extern char multiplayer_names[MAX_PLAYERS][16];
-extern int multiplayer_menu_player;
-extern int multiplayer_cmd_damage_totals[MAX_PLAYERS][MAX_PLAYERS];
+extern int player_life[MAX_PLAYERS];
+extern int selected_player;
+extern char player_names[MAX_PLAYERS][16];
+extern int menu_player;
+extern int cmd_damage_totals[MAX_PLAYERS][MAX_PLAYERS];
 extern int cmd_damage_target;
-extern int multiplayer_all_damage_value;
-extern int multiplayer_pending_life_delta;
-extern int multiplayer_preview_player;
-extern bool multiplayer_life_preview_active;
+extern int all_damage_value;
+extern int pending_life_delta;
+extern int preview_player;
+extern bool life_preview_active;
 extern int dice_result;
-extern int multiplayer_counter_values[MAX_PLAYERS][COUNTER_TYPE_COUNT];
-extern counter_type_t multiplayer_counter_edit_type;
-extern int multiplayer_counter_edit_value;
-extern bool multiplayer_eliminated[MAX_PLAYERS];
-extern int singleplayer_counter_values[COUNTER_TYPE_COUNT];
-extern bool counter_edit_is_singleplayer;
+extern int player_counters[MAX_PLAYERS][COUNTER_TYPE_COUNT];
+extern counter_type_t counter_edit_type;
+extern int counter_edit_value;
+extern bool player_eliminated[MAX_PLAYERS];
 
 // ---------- functions ----------
 void knob_life_init(void);
 void knob_life_reset(void);
-void change_life(int delta);
 void damage_enter(void);
 void add_damage_to_selected_enemy(int delta);
 void damage_apply(void);
 void damage_cancel(void);
-void change_multiplayer_life(int delta);
-void change_multiplayer_all_damage(int delta);
+void change_player_life(int delta);
+void change_all_damage(int delta);
 void undo_life_change(int player, int delta);
 void undo_cmd_damage(int source, int target, int delta);
 void undo_counter_change(int player, int counter_type, int delta);
 void prepare_cmd_damage_for_player(int target);
-void multiplayer_life_preview_commit_cb(lv_timer_t *timer);
-void begin_multiplayer_counter_edit(int player, counter_type_t type);
-void change_multiplayer_counter_edit(int delta);
-int apply_multiplayer_counter_edit(void);
-int get_multiplayer_counter_value(int player, counter_type_t type);
-void begin_singleplayer_counter_edit(counter_type_t type);
-int apply_singleplayer_counter_edit(void);
-int get_singleplayer_counter_value(counter_type_t type);
+void life_preview_commit_cb(lv_timer_t *timer);
+void begin_counter_edit(int player, counter_type_t type);
+void change_counter_edit(int delta);
+int apply_counter_edit(void);
+int get_counter_value(int player, counter_type_t type);
 const counter_definition_t *get_counter_definition(counter_type_t type);
 bool counter_type_is_enabled(counter_type_t type);
 
-bool multiplayer_elimination_action_available(int player);
-void undo_multiplayer_elimination_action(int player);
+bool elimination_action_available(int player);
+void undo_elimination_action(int player);
 
 // ---------- player colors ----------
 lv_color_t get_player_color_vib(int index, int vibrancy);
