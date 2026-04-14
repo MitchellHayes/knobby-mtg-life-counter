@@ -3,7 +3,7 @@
 #
 # To override paths for your machine, create a file called config.local.sh
 # (gitignored) and set any of these variables there.
-# The shell scripts (sim.sh, web.sh, web_real.sh) will pass them to make.
+# The shell scripts (sim.sh, compile.sh, sim-web.sh) will pass them to make.
 #
 # Example config.local.sh:
 #   LVGL_PATH=/opt/homebrew/share/arduino/libraries/lvgl
@@ -14,7 +14,9 @@
 CC        ?= clang
 
 # LVGL path — auto-detected by config.sh, passed in from shell
-LVGL_PATH ?= $(HOME)/Documents/Arduino/libraries/lvgl
+# Linux default: ~/Arduino/libraries/lvgl
+# macOS default: ~/Documents/Arduino/libraries/lvgl
+LVGL_PATH ?= $(HOME)/Arduino/libraries/lvgl
 
 # Python — auto-detected by config.sh as python3/python
 PYTHON    ?= python3

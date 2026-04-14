@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# web.sh - Build the Knobby web simulator (WASM)
+# compile.sh - Build the Knobby web simulator (WASM)
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 . "$SCRIPT_DIR/config.sh"
@@ -11,4 +11,4 @@ fi
 
 echo "[INFO] Building web simulator (WASM)..."
 $MAKE -C "$SCRIPT_DIR/sim" PYTHON="$PYTHON" LVGL_PATH="$LVGL_PATH" EMCC="$EMCC" web
-echo "[OK] Build complete. Run web_real.sh to start the simulator."
+echo "[OK] Build complete. Run sim-web.sh to start the simulator."
