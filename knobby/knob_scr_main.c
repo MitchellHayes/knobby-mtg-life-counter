@@ -337,31 +337,40 @@ static void event_back_main(lv_event_t *e)
 }
 
 // ---------- counter row helper ----------
+static const lv_font_t *get_counter_badge_font_1p(const counter_definition_t *definition)
+{
+    if (definition != NULL && definition->icon_text != NULL) {
+        return &mana_counter_icons_16;
+    }
+
+    return &lv_font_montserrat_14;
+}
+
+static const char *get_counter_badge_text_1p(const counter_definition_t *definition)
+{
+    if (definition == NULL) return "?";
+    if (definition->icon_text != NULL) return definition->icon_text;
+    if (definition->badge_text != NULL) return definition->badge_text;
+    return "?";
+}
+
 static void create_counter_row_1p(lv_obj_t *parent, counter_type_t type,
                                   lv_obj_t **row_out, lv_obj_t **value_out)
 {
     const counter_definition_t *definition = get_counter_definition(type);
     lv_obj_t *row;
-    lv_obj_t *icon;
     lv_obj_t *glyph;
 
     row = make_plain_box(parent, 34, 34);
     lv_obj_add_flag(row, LV_OBJ_FLAG_HIDDEN);
 
-    icon = lv_obj_create(row);
-    lv_obj_remove_style_all(icon);
-    lv_obj_set_size(icon, 16, 16);
-    lv_obj_align(icon, LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_set_style_radius(icon, LV_RADIUS_CIRCLE, 0);
-    lv_obj_set_style_bg_opa(icon, LV_OPA_COVER, 0);
-    lv_obj_set_style_bg_color(icon,
-        definition != NULL ? lv_color_hex(definition->accent_color) : lv_color_hex(0x303030), 0);
-
-    glyph = lv_label_create(icon);
-    lv_label_set_text(glyph, definition != NULL ? definition->badge_text : "?");
+    glyph = lv_label_create(row);
+    lv_label_set_text(glyph, get_counter_badge_text_1p(definition));
     lv_obj_set_style_text_color(glyph, lv_color_white(), 0);
-    lv_obj_set_style_text_font(glyph, &lv_font_montserrat_14, 0);
-    lv_obj_center(glyph);
+    lv_obj_set_style_text_font(glyph,
+        (type == COUNTER_TYPE_POISON) ? &mana_poison_icon_bold_16
+                                      : get_counter_badge_font_1p(definition), 0);
+    lv_obj_align(glyph, LV_ALIGN_TOP_MID, 0, 0);
 
     *value_out = lv_label_create(row);
     lv_label_set_text(*value_out, "0");
