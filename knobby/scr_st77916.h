@@ -288,6 +288,10 @@ void setRotation(uint8_t rot)
   }
 }
 
+void scr_display_on(void)
+{
+  if (lcd != NULL) lcd->displayOn();
+}
 
 static bool tp_tracking = false;
 static bool tp_swiped = false;
@@ -517,9 +521,6 @@ void scr_lvgl_init()
     lcd->mirrorY(true);
     touch->mirrorY(true);
   }
-  lcd->displayOn();
-
-
   size_t lv_cache_rows = 72;
 
   disp_draw_buf = (lv_color_t *)heap_caps_malloc(lv_cache_rows * SCREEN_RES_HOR * 2, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
