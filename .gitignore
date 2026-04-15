@@ -73,7 +73,6 @@ sim/knobby_sim_gui.exe
 sim/screenshots/
 sim/web_sources.txt
 sim/gen_web_sources.py
-sim/web_sources.txt
 sim/knobby_web.wasm
 
 
